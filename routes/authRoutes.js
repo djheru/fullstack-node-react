@@ -15,5 +15,9 @@ module.exports = (app) => {
   app.get('/api/current-user', (req, res) => {
     res.send(req.user);
   });
+
+  app.get('/', (req, res) => {
+    res.send(process.env);
+  });
 };
 

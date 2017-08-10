@@ -7,8 +7,8 @@ const keys = require('./config/keys');
 require('./models/User');
 require('./services/passport');
 
-const {mongoUser, mongoPass, mongoHosts, mongoDatabase, mongoOptions, cookieKey} = keys;
-const uri = `mongodb://${mongoUser}:${mongoPass}@${mongoHosts.join(',')}/${mongoDatabase}?${mongoOptions}`;
+const {mongoUser, mongoPass, mongoHost, mongoPort, mongoDatabase, cookieKey} = keys;
+const uri = `mongodb://${mongoUser}:${mongoPass}@${mongoHost}:${mongoPort}/${mongoDatabase}`;
 mongoose.connect(uri);
 
 const app = express();
