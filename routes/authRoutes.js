@@ -17,7 +17,7 @@ module.exports = (app) => {
   });
 
   app.get('/', (req, res) => {
-    res.send(process.env);
+    res.send({hello: 'wordl'});
   });
 };
 

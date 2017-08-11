@@ -14,8 +14,6 @@ passport.deserializeUser((userId, done) => {
     .then(user => done(null, user));
 });
 
-console.log(process.env);
-
 passport.use(new GoogleStrategy({
   clientID: keys.googleClientID,
   clientSecret: keys.googleClientSecret,
