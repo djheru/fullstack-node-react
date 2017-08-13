@@ -6,7 +6,7 @@
 
 ## Add Heroku App
 - Login - `heroku login`
-- Create neww app - `heroku create`
+- Create new app - `heroku create`
   - This gives you the app url and the git repo url
     - https://secret-basin-36896.herokuapp.com/
     - https://git.heroku.com/secret-basin-36896.git
@@ -15,4 +15,6 @@
 - Push to remote - `git push heroku master`
 - It automatically builds it
 - View it - `heroku open`
+
+## Build client side
 
