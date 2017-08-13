@@ -18,3 +18,17 @@
 
 ## Build client side
 
+```
+// in package.json
+{
+  ...
+  "scripts": {
+      "start": "node index.js",
+      "server": "nodemon index.js",
+      "client": "npm run start --prefix client",
+      "dev": "concurrently \"npm run server\" \"npm run client\"",
+      "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    },
+    ...
+}
+```
