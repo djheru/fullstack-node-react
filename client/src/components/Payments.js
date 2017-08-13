@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../actions';
 import StripeCheckout from 'react-stripe-checkout';
 
 class Payments extends Component {
   render() {
     return <StripeCheckout
       amount={500}
-      token={tok => console.log(tok)} // callback for when the token is received, e.g. onToken
+      token={tok => this.props.handleToken(tok)} // callback for when the token is received, e.g. onToken
       stripeKey={process.env.REACT_APP_STRIPE_KEY}
       name="Emaily Credits"
       description="$5 for 5 email survey credits">
@@ -14,4 +16,4 @@ class Payments extends Component {
   }
 }
 
-export default Payments;
+export default connect(null, actions)(Payments);
