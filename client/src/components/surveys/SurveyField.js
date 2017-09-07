@@ -7,11 +7,14 @@ class SurveyField extends Component {
   }
 
   render() {
-    const {input, label} = this.props;
+    const {input, label, meta: {touched, error}} = this.props;
     return (
       <div>
         <label>{label}</label>
-        <input {...input} />
+        <input {...input} style={{ marginBottom: '5px' }} />
+        <div className="red-text" style={{ marginBottom: '20px' }}>
+          {touched && error}
+        </div>
       </div>
     );
   }
