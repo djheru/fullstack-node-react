@@ -10,13 +10,12 @@ const requireLogin = require('../middlewares/requireLogin');
 
 module.exports = (app) => {
 
-  app.get('/api/surveys/thanks', (req, res) => {
+  app.get('/api/surveys/:surveyId/:choice', (req, res) => {
     res.send('Thanks for voting!');
   });
 
   app.post('/api/surveys/webhooks', (req, res) => {
     const p = new Path('/api/surveys/:surveyId/:choice');
-    console.log(req.body);
 
     const processEvent = ({email, url}) => {
       if (!email || !url) {
@@ -38,7 +37,8 @@ module.exports = (app) => {
       },
       {
         $inc: { [choice]: 1 }, // increment interpolated key
-        $set: { 'recipients.$.responded': true }
+        $set: { 'recipients.$.responded': true },
+        lastResponded: Date.now()
       }
     ).exec();
 
