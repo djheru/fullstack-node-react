@@ -8,6 +8,32 @@ const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
 const requireCredits = require('../middlewares/requireCredits');
 const requireLogin = require('../middlewares/requireLogin');
 
+const processEvent = ({email, url}) => {
+  if (!email || !url) {
+    return;
+  }
+  const surveyResponsePath = new Path('/api/surveys/:surveyId/:choice');
+  const match = surveyResponsePath.test(new URL(url).pathname);
+  if (match) {
+    const { choice, surveyId } = match;
+    return { choice, email, surveyId};
+  }
+};
+
+const updateEvent = ({ choice, email, surveyId }) => Survey.updateOne(
+  {
+    _id: surveyId,
+    recipients: {
+      $elemMatch: { email, responded: false }
+    }
+  },
+  {
+    $inc: { [choice]: 1 }, // increment interpolated key
+    $set: { 'recipients.$.responded': true },
+    lastResponded: Date.now()
+  }
+).exec();
+
 module.exports = (app) => {
 
   app.get('/api/surveys/:surveyId/:choice', (req, res) => {
@@ -15,33 +41,6 @@ module.exports = (app) => {
   });
 
   app.post('/api/surveys/webhooks', (req, res) => {
-    const p = new Path('/api/surveys/:surveyId/:choice');
-
-    const processEvent = ({email, url}) => {
-      if (!email || !url) {
-        return;
-      }
-      const match = p.test(new URL(url).pathname);
-      if (match) {
-        const { choice, surveyId } = match;
-        return { choice, email, surveyId};
-      }
-    };
-
-    const updateEvent = ({ choice, email, surveyId }) => Survey.updateOne(
-      {
-        _id: surveyId,
-        recipients: {
-          $elemMatch: { email, responded: false }
-        }
-      },
-      {
-        $inc: { [choice]: 1 }, // increment interpolated key
-        $set: { 'recipients.$.responded': true },
-        lastResponded: Date.now()
-      }
-    ).exec();
-
     _.chain(req.body)
       .map(processEvent)
       .compact()
@@ -71,5 +70,12 @@ module.exports = (app) => {
     } catch (e) {
       res.status(422).send(e);
     }
+  });
+
+  app.get('/api/surveys', requireLogin, async (req, res) => {
+    const surveys = await Survey
+      .find({ _user: req.user.id })
+      .select({ recipients: false });
+    res.send(surveys);
   });
 };
